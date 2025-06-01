@@ -1,0 +1,29 @@
+<template>
+    <lightning-card >
+        <div class="slds-p-around_medium">
+        <lightning-file-upload 
+            label="Upload Logo" 
+            name="logoUpload" 
+            onuploadfinished={handleUploadFinished}>
+        </lightning-file-upload>
+
+        <lightning-file-upload 
+            label="Upload Banner" 
+            name="bannerUpload" 
+            onuploadfinished={handleUploadFinished}>
+        </lightning-file-upload>
+
+        <lightning-input 
+            type="color" 
+            label="Choose Color" 
+            onchange={handleColorChange}>
+        </lightning-input>
+
+        <lightning-button 
+            variant="brand" 
+            label="Submit" 
+            onclick={handleSubmit}>
+        </lightning-button>
+        </div>
+        </lightning-card>
+</template>
