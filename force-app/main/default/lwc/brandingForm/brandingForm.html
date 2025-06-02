@@ -1,18 +1,24 @@
 <template>
-    <lightning-card >
+    <lightning-card title="Create Case">
         <div class="slds-p-around_medium">
         <lightning-file-upload 
             label="Upload Logo" 
             name="logoUpload" 
-            onuploadfinished={handleUploadFinished}>
+            onuploadfinished={handleLogoUploadFinished}>
         </lightning-file-upload>
-
+        <template if:true={logo}>
+            <h3 class="slds-m-top_medium">Uploaded File:</h3>
+            <p class="slds-m-left_medium">{logo.name}</p>
+        </template>
         <lightning-file-upload 
             label="Upload Banner" 
             name="bannerUpload" 
-            onuploadfinished={handleUploadFinished}>
+            onuploadfinished={handleBannerUploadFinished}>
         </lightning-file-upload>
-
+        <template if:true={banner}>
+            <h3 class="slds-m-top_medium">Uploaded File:</h3>
+            <p class="slds-m-left_medium">{banner.name}</p>
+        </template>
         <lightning-input 
             type="color" 
             label="Choose Color" 

@@ -3,10 +3,19 @@ import sendToExternalApi from '@salesforce/apex/BrandingFormController.sendToExt
 
 export default class BrandingForm extends LightningElement {
     uploadedFiles = [];
+    logo;
+    banner;
     selectedColor;
 
-    handleUploadFinished(event) {
+    handleLogoUploadFinished(event) {
         const files = event.detail.files;
+        this.logo = files[0];
+        this.uploadedFiles.push(...files.map(f => f.documentId));
+    }
+
+    handleBannerUploadFinished(event) {
+        const files = event.detail.files;
+        this.banner = files[0];
         this.uploadedFiles.push(...files.map(f => f.documentId));
     }
 
