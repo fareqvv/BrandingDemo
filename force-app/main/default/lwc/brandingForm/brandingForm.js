@@ -19,7 +19,7 @@ export default class BrandingForm extends LightningElement {
             fileIds: this.uploadedFiles, 
             color: this.selectedColor 
         }).then(() => {
-            console.log('Data sent to receiver org');
+            alert('Data sent to receiver org');
         }).catch(err => {
             console.error('Error sending data', err);
         });

@@ -12,17 +12,16 @@ global with sharing class BrandingFormController {
             });
         }
 
-        Map<String, Object> payload = new Map<String, Object>{
-            'color' => color,
-            'files' => filesPayload,
-            'senderOrg' => UserInfo.getOrganizationId()
-        };
-        System.System.debug(UserInfo.getOrganizationId());
+        BrandingRequest request = new BrandingRequest();
+        request.color = color;
+        request.files = filesPayload;
+        request.senderOrg = UserInfo.getOrganizationId();
+
         HttpRequest req = new HttpRequest();
         req.setEndpoint('callout:BrandingAPI/services/apexrest/createcase');
         req.setMethod('POST');
         req.setHeader('Content-Type', 'application/json');
-        req.setBody(JSON.serialize(payload));
+        req.setBody(JSON.serialize(request));
 
         Http http = new Http();
         HttpResponse res = http.send(req);
@@ -30,9 +29,10 @@ global with sharing class BrandingFormController {
         if (res.getStatusCode() != 200) {
             throw new CalloutException('Failed to call target org: ' + res.getBody());
         }
-
-        Branding__c ft = new Branding__c (Name = 'Case' + (String)payload.get('color') , Color__c = (String)payload.get('color'), Banner__c = (String)payload.get('files'));
-        insert ft;
     }
-    
+    public class BrandingRequest {
+        public String color;
+        public List<Object> files;
+        public String senderOrg;
+    }
 }
