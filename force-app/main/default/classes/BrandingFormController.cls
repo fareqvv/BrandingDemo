@@ -31,22 +31,42 @@ global with sharing class BrandingFormController {
             throw new CalloutException('Failed to call target org: ' + res.getBody());
         }
         ResponseBody response = (ResponseBody) JSON.deserialize(res.getBody(), ResponseBody.class);
-        try{
-            Branding_Setting__c setting = new Branding_Setting__c();
-        if (setting == null) {
-            setting = new Branding_Setting__c();
-        }
-        setting.Name = response.caseId;
-        setting.Case_Id__c = response.caseId;
-        setting.Subject__c = response.subject;
-        setting.Color__c = response.color;
-        setting.Description__c = response.description;
-        setting.Logo__c = response.contents[0].ContentDocumentId;
-        setting.Banner__c = response.contents[1].ContentDocumentId;
-        setting.Created_Date__c = System.Now();
-        upsert setting;}
-        catch(Exception e){
-            System.debug(e.getMessage());
+        try {
+            Branding_Setting__c setting = [
+                SELECT Id 
+                FROM Branding_Setting__c 
+                WHERE Name = :response.caseId 
+                LIMIT 1
+            ];
+        
+            setting.Case_Id__c = response.caseId;
+            setting.Color__c = response.color;
+            if (response != null && response.contents != null && !response.contents.isEmpty()) {
+                setting.Logo__c = response.contents[0].ContentDocumentId;
+            }
+            if (response != null && response.contents != null && response.contents.size() >= 2) {
+                setting.Banner__c = response.contents[1].ContentDocumentId;
+            }
+            setting.Created_Date__c = System.Now();
+        
+            update setting;
+        
+        } catch (QueryException e) {
+            Branding_Setting__c newSetting = new Branding_Setting__c();
+            newSetting.Name = response.caseId;
+            newSetting.Case_Id__c = response.caseId;
+            newSetting.Color__c = response.color;
+            if (response != null && response.contents != null && !response.contents.isEmpty()) {
+                newSetting.Logo__c = response.contents[0].ContentDocumentId;
+            }
+            if (response != null && response.contents != null && response.contents.size() >= 2) {
+                newSetting.Banner__c = response.contents[1].ContentDocumentId;
+            }
+            newSetting.Created_Date__c = System.Now();
+        
+            insert newSetting;
+        } catch (Exception ex) {
+            System.debug('Unexpected error: ' + ex.getMessage());
         }
     }
 
@@ -101,9 +121,7 @@ global with sharing class BrandingFormController {
     public class ResponseBody{
         public Id caseId;
         public String subject;
-        public String senderOrg;
   		public String color;
-        public String description;
         public List<ContentDocumentLink> contents;
     }
 }
