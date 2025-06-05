@@ -2,11 +2,11 @@ global with sharing class BrandingFormController {
     
     @AuraEnabled
     public static void sendToExternalApi(List<Id> fileIds, String color, Boolean forUpdate) {
-        List<ContentVersion> versions = [SELECT Id, Title, VersionData, ContentDocumentId FROM ContentVersion WHERE ContentDocumentId IN :fileIds];
+        List<ContentVersion> versions = [SELECT Id, Title, VersionData, ContentDocumentId, FileExtension FROM ContentVersion WHERE ContentDocumentId IN :fileIds];
         List<Map<String, Object>> filesPayload = new List<Map<String, Object>>();
         for (ContentVersion cv : versions) {
             filesPayload.add(new Map<String, Object>{
-                'fileName' => cv.Title,
+                'fileName' => cv.Title + '.' + cv.FileExtension,
                 'base64Data' => EncodingUtil.base64Encode(cv.VersionData)
             });
         }
