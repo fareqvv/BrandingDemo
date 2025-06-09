@@ -9,6 +9,7 @@ export default class BrandingForm extends LightningElement {
     @track selectedColor;
     caseData;
     forUpdate = false;
+    fileTypeMap = {};
 
     connectedCallback() {
         fetchCase()
@@ -29,14 +30,15 @@ export default class BrandingForm extends LightningElement {
 
     handleLogoUploadFinished(event) {
         const files = event.detail.files;
-        console.log(files);
         this.logo = files[0];
+        this.fileTypeMap['logo'] = files[0].documentId;
         this.uploadedFiles.push(...files.map(f => f.documentId));
     }
 
     handleBannerUploadFinished(event) {
         const files = event.detail.files;
         this.banner = files[0];
+        this.fileTypeMap['banner'] = files[0].documentId;
         this.uploadedFiles.push(...files.map(f => f.documentId));
     }
 
@@ -49,6 +51,7 @@ export default class BrandingForm extends LightningElement {
             fileIds: this.uploadedFiles, 
             color: this.selectedColor,
             forUpdate: this.forUpdate,
+            fileType: this.fileTypeMap
         }).then(() => {
             alert('Data sent to receiver org');
         }).catch(err => {
